@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using FinalSystemUI.Database;
 using FinalSystemUI.Models;
 
@@ -48,7 +48,7 @@ namespace FinalSystemUI.Repositories
         private static string Trim(string s)
         {
             if (s == null) return null;
-            return s.Length > 500 ? s.Substring(0, 500) : s;
+            return s.Length > 500 ? s[..500] : s;
         }
     }
     public class AuditEntry

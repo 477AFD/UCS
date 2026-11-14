@@ -6,8 +6,8 @@ namespace FinalSystemUI.Database
     /// </summary>
     public static class DbSchema
     {
-        public static readonly string[] Statements = new string[]
-        {
+        public static readonly string[] Statements =
+        [
             // IF OBJECT_ID(N'dbo.Semesters', N'U') IS NULL
             @"IF OBJECT_ID(N'dbo.Semesters', N'U') IS NULL
 CREATE TABLE dbo.Semesters (
@@ -202,6 +202,6 @@ BEGIN
     FROM dbo.vw_StudentStanding
     WHERE StudentId = @StudentId;
 END",
-        };
+        ];
     }
 }

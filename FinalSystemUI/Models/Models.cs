@@ -18,13 +18,13 @@ namespace FinalSystemUI.Models
         {
             get
             {
-                switch (Role)
+                return Role switch
                 {
-                    case UserRole.Student: return "Student";
-                    case UserRole.Hsg: return "HSG";
-                    case UserRole.Osse: return "OSSE";
-                    default: return "";
-                }
+                    UserRole.Student => "Student",
+                    UserRole.Hsg => "HSG",
+                    UserRole.Osse => "OSSE",
+                    _ => "",
+                };
             }
         }
 
@@ -43,7 +43,7 @@ namespace FinalSystemUI.Models
         public const int NoId = 4;
 
         public static readonly string[] Names =
-            { "No uniform", "Inappropriate attire", "Invalid ID lanyard", "No ID" };
+            ["No uniform", "Inappropriate attire", "Invalid ID lanyard", "No ID"];
 
         public static string NameOf(int typeId)
         {

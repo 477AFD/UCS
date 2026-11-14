@@ -10,8 +10,7 @@ namespace FinalSystemUI.Repositories
         public static int GetInt(string key, int defaultValue)
         {
             object o = Db.Scalar("SELECT SettingValue FROM dbo.Settings WHERE SettingKey = @k", Db.P("@k", key));
-            int value;
-            if (o != null && int.TryParse(Convert.ToString(o), out value)) return value;
+            if (o != null && int.TryParse(Convert.ToString(o), out int value)) return value;
             return defaultValue;
         }
 
@@ -29,9 +28,7 @@ namespace FinalSystemUI.Repositories
         {
             SemesterInfo s = Db.ReadOne(
                 "SELECT TOP 1 SemesterId, Name FROM dbo.Semesters WHERE IsCurrent = 1 ORDER BY SemesterId DESC",
-                r => new SemesterInfo { SemesterId = Db.Int(r, "SemesterId"), Name = Db.Str(r, "Name") });
-            if (s == null)
-                throw new InvalidOperationException("No current semester is set in the database.");
+                r => new SemesterInfo { SemesterId = Db.Int(r, "SemesterId"), Name = Db.Str(r, "Name") }) ?? throw new InvalidOperationException("No current semester is set in the database.");
             return s;
         }
 

@@ -27,7 +27,7 @@ namespace FinalSystemUI.Services
         public static List<ViolationRow> MyViolations(ViolationFilter filter)
         {
             AppUser me = Session.Require(UserRole.Student);
-            if (filter == null) filter = new ViolationFilter();
+            filter ??= new ViolationFilter();
             filter.StudentId = me.Id;
             filter.SemesterId = SettingsRepository.CurrentSemester().SemesterId;
             return ViolationRepository.Query(filter);
@@ -44,7 +44,7 @@ namespace FinalSystemUI.Services
         public static List<ViolationRow> AllRecords(ViolationFilter filter)
         {
             Session.Require(UserRole.Hsg, UserRole.Osse);
-            if (filter == null) filter = new ViolationFilter();
+            filter ??= new ViolationFilter();
             filter.SemesterId = SettingsRepository.CurrentSemester().SemesterId;
             return ViolationRepository.Query(filter);
         }
@@ -89,21 +89,19 @@ namespace FinalSystemUI.Services
             if (remarks != null && remarks.Length > 300)
                 throw new ArgumentException("The remarks are too long (300 characters at most).");
 
-            StudentRow student = StudentRepository.FindByNumber((studentNumber ?? "").Trim());
-            if (student == null)
-                throw new ArgumentException("No student was found with that ID number.");
+            StudentRow student = StudentRepository.FindByNumber((studentNumber ?? "").Trim()) ?? throw new ArgumentException("No student was found with that ID number.");
             if (!student.IsActive)
                 throw new ArgumentException("This student account is disabled.");
 
             decimal fine = 0m;
             if (ViolationTypeIds.IsFinable(typeId))
             {
-                fine = fineAmount.HasValue ? fineAmount.Value : SettingsRepository.DefaultFine(typeId);
+                fine = fineAmount ?? SettingsRepository.DefaultFine(typeId);
                 if (fine < 0 || fine > MaxFine)
                     throw new ArgumentException("The fine amount is not valid.");
             }
 
-            NewViolation nv = new NewViolation
+            NewViolation nv = new()
             {
                 StudentId = student.StudentId,
                 TypeId = typeId,
@@ -123,8 +121,7 @@ namespace FinalSystemUI.Services
         {
             AppUser me = Session.Require(UserRole.Hsg);
 
-            ViolationRow row = ViolationRepository.Get(violationId);
-            if (row == null) throw new InvalidOperationException("This record no longer exists.");
+            ViolationRow row = ViolationRepository.Get(violationId) ?? throw new InvalidOperationException("This record no longer exists.");
             if (!row.CanEdit(SettingsRepository.EditWindowHours))
                 throw new InvalidOperationException("This record is locked. HSG can edit a record only within " +
                     SettingsRepository.EditWindowHours + " hours after it was made.");
@@ -142,7 +139,7 @@ namespace FinalSystemUI.Services
             decimal fine = 0m;
             if (ViolationTypeIds.IsFinable(typeId))
             {
-                fine = fineAmount.HasValue ? fineAmount.Value : SettingsRepository.DefaultFine(typeId);
+                fine = fineAmount ?? SettingsRepository.DefaultFine(typeId);
                 if (row.IsPaid && row.FineAmount.HasValue) fine = row.FineAmount.Value;   // a paid fine cannot change
                 if (fine < 0 || fine > MaxFine)
                     throw new ArgumentException("The fine amount is not valid.");

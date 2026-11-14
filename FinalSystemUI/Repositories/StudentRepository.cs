@@ -9,7 +9,7 @@ namespace FinalSystemUI.Repositories
     {
         private const string Columns = "StudentId, StudentNumber, FullName, Email, PasswordHash, IsActive";
 
-        private static StudentRow Map(System.Data.SqlClient.SqlDataReader r)
+        private static StudentRow Map(Microsoft.Data.SqlClient.SqlDataReader r)
         {
             return new StudentRow
             {

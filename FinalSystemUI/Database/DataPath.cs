@@ -19,7 +19,7 @@ namespace FinalSystemUI.Database
         public const string LogFileName = "UniformComplianceDB_log.ldf";
 
         private static string _folder;
-        private static readonly object Gate = new object();
+        private static readonly object Gate = new();
 
         public static string Folder
         {
@@ -57,7 +57,7 @@ namespace FinalSystemUI.Database
                 else
                 {
                     // Started from Visual Studio: bin\Debug\ -> go up until the folder that has the .csproj
-                    DirectoryInfo d = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+                    DirectoryInfo d = new(AppDomain.CurrentDomain.BaseDirectory);
                     for (int i = 0; i < 5 && d != null; i++)
                     {
                         if (d.GetFiles("*.csproj").Length > 0)
@@ -67,12 +67,9 @@ namespace FinalSystemUI.Database
                         }
                         d = d.Parent;
                     }
-                    if (folder == null)
-                    {
-                        folder = Path.Combine(
+                    folder ??= Path.Combine(
                             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                             "UniformCompliance", "Data");
-                    }
                 }
 
                 Directory.CreateDirectory(folder);

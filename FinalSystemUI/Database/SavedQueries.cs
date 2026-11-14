@@ -18,8 +18,8 @@ namespace FinalSystemUI.Database
     /// </summary>
     public static class SavedQueries
     {
-        public static readonly List<SavedQuery> All = new List<SavedQuery>
-        {
+        public static readonly List<SavedQuery> All =
+        [
             new SavedQuery { Number = 1, Group = @"1. Connection and basic SELECT", Title = @"Connection information", Description = @"Shows which server and database file the program is connected to.",
                 Sql = @"SELECT DB_NAME()                         AS DatabaseName,
        @@SERVERNAME                      AS ServerName,
@@ -201,6 +201,6 @@ ORDER BY TotalViolations DESC;" },
             new SavedQuery { Number = 28, Group = @"6. Views and stored procedure", Title = @"Stored procedure: usp_StudentSummary", Description = @"Runs a stored procedure for the first student.",
                 Sql = @"DECLARE @id INT = (SELECT TOP 1 StudentId FROM dbo.Students ORDER BY StudentId);
 EXEC dbo.usp_StudentSummary @StudentId = @id;" },
-        };
+        ];
     }
 }

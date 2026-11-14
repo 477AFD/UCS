@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Text;
 using FinalSystemUI.Database;
 using FinalSystemUI.Models;
@@ -56,8 +56,8 @@ namespace FinalSystemUI.Repositories
 
         public static List<ViolationRow> Query(ViolationFilter f)
         {
-            List<string> where = new List<string>();
-            List<SqlParameter> ps = new List<SqlParameter>();
+            List<string> where = [];
+            List<SqlParameter> ps = [];
 
             if (f != null)
             {
@@ -67,10 +67,10 @@ namespace FinalSystemUI.Repositories
                 if (f.TypeIds != null && f.TypeIds.Length > 0)
                 {
                     // Only whole numbers are joined here, so this is safe.
-                    StringBuilder sb = new StringBuilder();
+                    StringBuilder sb = new();
                     foreach (int id in f.TypeIds)
                     {
-                        if (sb.Length > 0) sb.Append(",");
+                        if (sb.Length > 0) sb.Append(',');
                         sb.Append(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
                     }
                     where.Add("v.TypeId IN (" + sb + ")");
@@ -93,7 +93,7 @@ namespace FinalSystemUI.Repositories
             string sql = SelectSql;
             if (where.Count > 0) sql += "WHERE " + string.Join(" AND ", where) + " ";
             sql += "ORDER BY v.RecordedAt DESC, v.ViolationId DESC";
-            return Db.Read(sql, Map, ps.ToArray());
+            return Db.Read(sql, Map, [.. ps]);
         }
 
         public static ViolationRow Get(int violationId)
@@ -110,8 +110,10 @@ namespace FinalSystemUI.Repositories
 
         public static StudentSummary SummaryForStudent(int studentId, int semesterId, int threshold)
         {
-            StudentSummary s = new StudentSummary();
-            s.Threshold = threshold;
+            StudentSummary s = new()
+            {
+                Threshold = threshold
+            };
 
             List<int[]> counts = Db.Read(
                 "SELECT COUNT(*) AS Total, " +
@@ -153,26 +155,28 @@ namespace FinalSystemUI.Repositories
 
         public static RecordCounts CountsForSemester(int semesterId)
         {
-            RecordCounts c = new RecordCounts();
-            c.NoUniform = TypeCount(semesterId, 1);
-            c.InappropriateAttire = TypeCount(semesterId, 2);
-            c.InvalidLanyard = TypeCount(semesterId, 3);
-            c.NoId = TypeCount(semesterId, 4);
-            c.TotalRecords = Db.ScalarInt("SELECT COUNT(*) FROM dbo.Violations WHERE SemesterId = @m", Db.P("@m", semesterId));
-            c.ForClearance = Db.ScalarInt(
-                "SELECT COUNT(*) FROM dbo.Violations v WHERE v.SemesterId = @m AND v.TypeId IN (3, 4) " +
-                "AND NOT EXISTS (SELECT 1 FROM dbo.ClearanceRecords c WHERE c.ViolationId = v.ViolationId)",
-                Db.P("@m", semesterId));
-            c.ClearedToday = Db.ScalarInt(
-                "SELECT COUNT(*) FROM dbo.ClearanceRecords c JOIN dbo.Violations v ON v.ViolationId = c.ViolationId " +
-                "WHERE v.SemesterId = @m AND CAST(c.ClearedAt AS DATE) = CAST(SYSDATETIME() AS DATE)",
-                Db.P("@m", semesterId));
-            c.UnpaidFines = Db.ScalarDecimal(
-                "SELECT ISNULL(SUM(f.Amount), 0) FROM dbo.Fines f JOIN dbo.Violations v ON v.ViolationId = f.ViolationId " +
-                "WHERE v.SemesterId = @m AND f.IsPaid = 0", Db.P("@m", semesterId));
-            c.CollectedFines = Db.ScalarDecimal(
-                "SELECT ISNULL(SUM(f.Amount), 0) FROM dbo.Fines f JOIN dbo.Violations v ON v.ViolationId = f.ViolationId " +
-                "WHERE v.SemesterId = @m AND f.IsPaid = 1", Db.P("@m", semesterId));
+            RecordCounts c = new()
+            {
+                NoUniform = TypeCount(semesterId, 1),
+                InappropriateAttire = TypeCount(semesterId, 2),
+                InvalidLanyard = TypeCount(semesterId, 3),
+                NoId = TypeCount(semesterId, 4),
+                TotalRecords = Db.ScalarInt("SELECT COUNT(*) FROM dbo.Violations WHERE SemesterId = @m", Db.P("@m", semesterId)),
+                ForClearance = Db.ScalarInt(
+                    "SELECT COUNT(*) FROM dbo.Violations v WHERE v.SemesterId = @m AND v.TypeId IN (3, 4) " +
+                    "AND NOT EXISTS (SELECT 1 FROM dbo.ClearanceRecords c WHERE c.ViolationId = v.ViolationId)",
+                    Db.P("@m", semesterId)),
+                ClearedToday = Db.ScalarInt(
+                    "SELECT COUNT(*) FROM dbo.ClearanceRecords c JOIN dbo.Violations v ON v.ViolationId = c.ViolationId " +
+                    "WHERE v.SemesterId = @m AND CAST(c.ClearedAt AS DATE) = CAST(SYSDATETIME() AS DATE)",
+                    Db.P("@m", semesterId)),
+                UnpaidFines = Db.ScalarDecimal(
+                    "SELECT ISNULL(SUM(f.Amount), 0) FROM dbo.Fines f JOIN dbo.Violations v ON v.ViolationId = f.ViolationId " +
+                    "WHERE v.SemesterId = @m AND f.IsPaid = 0", Db.P("@m", semesterId)),
+                CollectedFines = Db.ScalarDecimal(
+                    "SELECT ISNULL(SUM(f.Amount), 0) FROM dbo.Fines f JOIN dbo.Violations v ON v.ViolationId = f.ViolationId " +
+                    "WHERE v.SemesterId = @m AND f.IsPaid = 1", Db.P("@m", semesterId))
+            };
             return c;
         }
 

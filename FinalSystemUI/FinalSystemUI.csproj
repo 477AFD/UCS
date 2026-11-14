@@ -1,234 +1,75 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F3618D62-2015-469E-9810-F2F9922491AA}</ProjectGuid>
+    <TargetFramework>net10.0-windows10.0.22000.0</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>FinalSystemUI</RootNamespace>
-    <AssemblyName>FinalSystemUI</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <SupportedOSPlatformVersion>10.0.22000.0</SupportedOSPlatformVersion>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System">
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="11.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="11.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DatabaseManager\DatabaseManager.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Update="System">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
     </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DashboardControl.cs">
+    <Compile Update="DashboardControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DashboardControl.Designer.cs">
-      <DependentUpon>DashboardControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LoginControl.cs">
+    <Compile Update="LoginControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LoginControl.Designer.cs">
-      <DependentUpon>LoginControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MyFines.cs">
+    <Compile Update="MyFines.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MyFines.Designer.cs">
-      <DependentUpon>MyFines.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HsgAddRecords.cs">
+    <Compile Update="HsgAddRecords.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="HsgAddRecords.Designer.cs">
-      <DependentUpon>HsgAddRecords.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HsgControl.cs">
+    <Compile Update="HsgControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="HsgControl.Designer.cs">
-      <DependentUpon>HsgControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OsseClearance1.cs">
+    <Compile Update="OsseClearance1.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="OsseClearance1.Designer.cs">
-      <DependentUpon>OsseClearance1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OsseRecords.cs">
+    <Compile Update="OsseRecords.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="OsseRecords.Designer.cs">
-      <DependentUpon>OsseRecords.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OsseUsers.cs">
+    <Compile Update="OsseUsers.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="OsseUsers.Designer.cs">
-      <DependentUpon>OsseUsers.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Database\Db.cs" />
-    <Compile Include="Database\DbSchema.cs" />
-    <Compile Include="Database\DataPath.cs" />
-    <Compile Include="Database\SavedQueries.cs" />
-    <Compile Include="Database\DatabaseInitializer.cs" />
-    <Compile Include="Models\Models.cs" />
-    <Compile Include="Helpers\PasswordHasher.cs" />
-    <Compile Include="Helpers\Session.cs" />
-    <Compile Include="Helpers\Ui.cs" />
-    <Compile Include="Receipt.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Receipt.Designer.cs">
-      <DependentUpon>Receipt.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Repositories\AuditRepository.cs" />
-    <Compile Include="Repositories\HsgRepository.cs" />
-    <Compile Include="Repositories\OsseRepository.cs" />
-    <Compile Include="Repositories\SettingsRepository.cs" />
-    <Compile Include="Repositories\StudentRepository.cs" />
-    <Compile Include="Repositories\UserRepository.cs" />
-    <Compile Include="Repositories\ViolationRepository.cs" />
-    <Compile Include="Services\AuthService.cs" />
-    <Compile Include="Services\RecordService.cs" />
-    <Compile Include="Services\UserService.cs" />
-    <Compile Include="Dialogs\InputBox.cs" />
-    <Compile Include="Dialogs\RecordEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\SplashForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\StudentEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\AuditLogForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\QueryViewerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\UserEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StudentControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="StudentControl.Designer.cs">
-      <DependentUpon>StudentControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViolationHistory.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ViolationHistory.Designer.cs">
-      <DependentUpon>ViolationHistory.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="DashboardControl.resx">
-      <DependentUpon>DashboardControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LoginControl.resx">
-      <DependentUpon>LoginControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MyFines.resx">
-      <DependentUpon>MyFines.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HsgAddRecords.resx">
-      <DependentUpon>HsgAddRecords.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HsgControl.resx">
-      <DependentUpon>HsgControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OsseClearance1.resx">
-      <DependentUpon>OsseClearance1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OsseRecords.resx">
-      <DependentUpon>OsseRecords.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OsseUsers.resx">
-      <DependentUpon>OsseUsers.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Receipt.resx">
-      <DependentUpon>Receipt.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StudentControl.resx">
-      <DependentUpon>StudentControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViolationHistory.resx">
-      <DependentUpon>ViolationHistory.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
+    <Compile Update="Receipt.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="StudentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ViolationHistory.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Mindoro State University Seal.png" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <None Include="Database\SqlScripts\01_CreateDatabase_Tables.sql" />
-    <None Include="Database\SqlScripts\02_Views_StoredProcedures.sql" />
-    <None Include="Database\SqlScripts\03_SampleData.sql" />
-    <None Include="Database\SqlScripts\04_Queries.sql" />
-    <None Include="Database\SqlScripts\05_Insert_Update_Delete_Examples.sql" />
   </ItemGroup>
 </Project>

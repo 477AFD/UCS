@@ -103,14 +103,12 @@ namespace FinalSystemUI.Services
             string label;
             if (kind == "Student")
             {
-                StudentRow st = StudentRepository.FindById(id);
-                if (st == null) throw new InvalidOperationException("This account no longer exists.");
+                StudentRow st = StudentRepository.FindById(id) ?? throw new InvalidOperationException("This account no longer exists.");
                 label = st.StudentNumber;
             }
             else if (kind == "HSG")
             {
-                HsgRow h = HsgRepository.FindById(id);
-                if (h == null) throw new InvalidOperationException("This account no longer exists.");
+                HsgRow h = HsgRepository.FindById(id) ?? throw new InvalidOperationException("This account no longer exists.");
                 label = h.Email;
             }
             else throw new ArgumentException("Unknown account type.");
@@ -145,7 +143,7 @@ namespace FinalSystemUI.Services
         {
             try
             {
-                MailAddress m = new MailAddress(email);
+                MailAddress m = new(email);
                 if (!string.Equals(m.Address, email, StringComparison.OrdinalIgnoreCase)) throw new FormatException();
             }
             catch (Exception)

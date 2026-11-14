@@ -29,8 +29,7 @@ namespace FinalSystemUI.Helpers
             string[] parts = stored.Split('.');
             if (parts.Length != 3) return false;
 
-            int iterations;
-            if (!int.TryParse(parts[0], out iterations)) return false;
+            if (!int.TryParse(parts[0], out int iterations)) return false;
             byte[] salt;
             byte[] expected;
             try

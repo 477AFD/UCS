@@ -1,4 +1,4 @@
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using FinalSystemUI.Database;
 using FinalSystemUI.Helpers;
 using FinalSystemUI.Models;

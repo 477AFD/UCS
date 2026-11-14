@@ -1,5 +1,5 @@
 using System;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.IO;
 using FinalSystemUI.Helpers;
 using FinalSystemUI.Models;
@@ -27,9 +27,11 @@ namespace FinalSystemUI.Database
 
         public static InitResult EnsureReady()
         {
-            InitResult result = new InitResult();
-            result.DatabaseFile = DataPath.MdfPath;
-            result.CreatedDatabaseFile = EnsureDatabaseFile();
+            InitResult result = new()
+            {
+                DatabaseFile = DataPath.MdfPath,
+                CreatedDatabaseFile = EnsureDatabaseFile()
+            };
 
             // From here on, every connection auto-attaches the .mdf file (AttachDbFilename in App.config).
             foreach (string statement in DbSchema.Statements)
@@ -62,21 +64,19 @@ namespace FinalSystemUI.Database
             if (File.Exists(mdf)) return false;
             if (File.Exists(ldf)) File.Delete(ldf);          // an old log file would block the new database
 
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(Db.ConnectionString);
+            SqlConnectionStringBuilder builder = new(Db.ConnectionString);
             builder.Remove("AttachDbFilename");
             builder.InitialCatalog = "master";
 
             string tempName = "tmp_" + Guid.NewGuid().ToString("N");
-            using (SqlConnection c = new SqlConnection(builder.ConnectionString))
-            {
-                c.Open();
-                // A name or a file path cannot be a parameter in CREATE DATABASE.
-                // tempName is only letters and numbers, and the paths have their quotes doubled, so this is safe.
-                Db.Execute(c, null,
-                    "CREATE DATABASE [" + tempName + "] ON PRIMARY (NAME = N'UniformComplianceDB', FILENAME = N'" + Quote(mdf) + "') " +
-                    "LOG ON (NAME = N'UniformComplianceDB_log', FILENAME = N'" + Quote(ldf) + "')");
-                Db.Execute(c, null, "EXEC master.dbo.sp_detach_db @dbname = @n, @skipchecks = N'true'", Db.P("@n", tempName));
-            }
+            using SqlConnection c = new(builder.ConnectionString);
+            c.Open();
+            // A name or a file path cannot be a parameter in CREATE DATABASE.
+            // tempName is only letters and numbers, and the paths have their quotes doubled, so this is safe.
+            Db.Execute(c, null,
+                "CREATE DATABASE [" + tempName + "] ON PRIMARY (NAME = N'UniformComplianceDB', FILENAME = N'" + Quote(mdf) + "') " +
+                "LOG ON (NAME = N'UniformComplianceDB_log', FILENAME = N'" + Quote(ldf) + "')");
+            Db.Execute(c, null, "EXEC master.dbo.sp_detach_db @dbname = @n, @skipchecks = N'true'", Db.P("@n", tempName));
             return true;
         }
 
@@ -95,14 +95,14 @@ namespace FinalSystemUI.Database
             string hsgHash = null;
             foreach (int id in Db.Read("SELECT HsgId FROM dbo.HsgAdmin WHERE PasswordHash IS NULL", r => Db.Int(r, "HsgId")))
             {
-                if (hsgHash == null) hsgHash = PasswordHasher.Hash(SampleHsgPassword);
+                hsgHash ??= PasswordHasher.Hash(SampleHsgPassword);
                 Db.Execute("UPDATE dbo.HsgAdmin SET PasswordHash = @p WHERE HsgId = @i", Db.P("@p", hsgHash), Db.P("@i", id));
             }
 
             string osseHash = null;
             foreach (int id in Db.Read("SELECT OsseId FROM dbo.OsseAdmin WHERE PasswordHash IS NULL", r => Db.Int(r, "OsseId")))
             {
-                if (osseHash == null) osseHash = PasswordHasher.Hash(SampleOssePassword);
+                osseHash ??= PasswordHasher.Hash(SampleOssePassword);
                 Db.Execute("UPDATE dbo.OsseAdmin SET PasswordHash = @p WHERE OsseId = @i", Db.P("@p", osseHash), Db.P("@i", id));
             }
 
@@ -123,8 +123,8 @@ namespace FinalSystemUI.Database
             int hsgId = HsgRepository.Insert("Maria Santos", "hsg@minsu.edu.ph", SampleHsgPassword, true);
             int osseId = OsseRepository.Insert("OSSE Administrator", "osse@minsu.edu.ph", SampleOssePassword);
 
-            AppUser hsg = new AppUser { Role = UserRole.Hsg, Id = hsgId, FullName = "Maria Santos" };
-            AppUser osseUser = new AppUser { Role = UserRole.Osse, Id = osseId, FullName = "OSSE Administrator" };
+            AppUser hsg = new() { Role = UserRole.Hsg, Id = hsgId, FullName = "Maria Santos" };
+            AppUser osseUser = new() { Role = UserRole.Osse, Id = osseId, FullName = "OSSE Administrator" };
             int semesterId = SettingsRepository.CurrentSemester().SemesterId;
             DateTime now = DateTime.Now;
 
@@ -138,7 +138,7 @@ namespace FinalSystemUI.Database
 
         private static void AddSample(int studentId, int typeId, DateTime at, AppUser actor, int semesterId, bool paid)
         {
-            NewViolation nv = new NewViolation
+            NewViolation nv = new()
             {
                 StudentId = studentId,
                 TypeId = typeId,

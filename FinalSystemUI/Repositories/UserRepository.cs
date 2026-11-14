@@ -52,11 +52,13 @@ namespace FinalSystemUI.Repositories
 
         public static UserCounts Counts()
         {
-            UserCounts c = new UserCounts();
-            c.Students = Db.ScalarInt("SELECT COUNT(*) FROM dbo.Students");
-            c.Hsg = Db.ScalarInt("SELECT COUNT(*) FROM dbo.HsgAdmin");
-            c.Active = Db.ScalarInt("SELECT (SELECT COUNT(*) FROM dbo.Students WHERE IsActive = 1) + (SELECT COUNT(*) FROM dbo.HsgAdmin WHERE IsActive = 1)");
-            c.Disabled = Db.ScalarInt("SELECT (SELECT COUNT(*) FROM dbo.Students WHERE IsActive = 0) + (SELECT COUNT(*) FROM dbo.HsgAdmin WHERE IsActive = 0)");
+            UserCounts c = new UserCounts
+            {
+                Students = Db.ScalarInt("SELECT COUNT(*) FROM dbo.Students"),
+                Hsg = Db.ScalarInt("SELECT COUNT(*) FROM dbo.HsgAdmin"),
+                Active = Db.ScalarInt("SELECT (SELECT COUNT(*) FROM dbo.Students WHERE IsActive = 1) + (SELECT COUNT(*) FROM dbo.HsgAdmin WHERE IsActive = 1)"),
+                Disabled = Db.ScalarInt("SELECT (SELECT COUNT(*) FROM dbo.Students WHERE IsActive = 0) + (SELECT COUNT(*) FROM dbo.HsgAdmin WHERE IsActive = 0)")
+            };
             return c;
         }
     }

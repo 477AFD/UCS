@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace FinalSystemUI.Database
 {
@@ -25,7 +25,7 @@ namespace FinalSystemUI.Database
 
         public static SqlConnection Open()
         {
-            SqlConnection c = new SqlConnection(ConnectionString);
+            SqlConnection c = new(ConnectionString);
             c.Open();
             return c;
         }
@@ -37,53 +37,49 @@ namespace FinalSystemUI.Database
 
         public static SqlParameter DateTime2(string name, DateTime? value)
         {
-            SqlParameter p = new SqlParameter(name, SqlDbType.DateTime2);
-            p.Value = value.HasValue ? (object)value.Value : DBNull.Value;
+            SqlParameter p = new(name, SqlDbType.DateTime2)
+            {
+                Value = value.HasValue ? (object)value.Value : DBNull.Value
+            };
             return p;
         }
 
         public static SqlParameter Money(string name, decimal value)
         {
-            SqlParameter p = new SqlParameter(name, SqlDbType.Decimal);
-            p.Precision = 10;
-            p.Scale = 2;
-            p.Value = value;
+            SqlParameter p = new(name, SqlDbType.Decimal)
+            {
+                Precision = 10,
+                Scale = 2,
+                Value = value
+            };
             return p;
         }
 
         public static int Execute(string sql, params SqlParameter[] ps)
         {
-            using (SqlConnection c = Open())
-            {
-                return Execute(c, null, sql, ps);
-            }
+            using SqlConnection c = Open();
+            return Execute(c, null, sql, ps);
         }
 
         public static int Execute(SqlConnection c, SqlTransaction t, string sql, params SqlParameter[] ps)
         {
-            using (SqlCommand cmd = new SqlCommand(sql, c, t))
-            {
-                if (ps != null && ps.Length > 0) cmd.Parameters.AddRange(ps);
-                return cmd.ExecuteNonQuery();
-            }
+            using SqlCommand cmd = new(sql, c, t);
+            if (ps != null && ps.Length > 0) cmd.Parameters.AddRange(ps);
+            return cmd.ExecuteNonQuery();
         }
 
         public static object Scalar(string sql, params SqlParameter[] ps)
         {
-            using (SqlConnection c = Open())
-            {
-                return Scalar(c, null, sql, ps);
-            }
+            using SqlConnection c = Open();
+            return Scalar(c, null, sql, ps);
         }
 
         public static object Scalar(SqlConnection c, SqlTransaction t, string sql, params SqlParameter[] ps)
         {
-            using (SqlCommand cmd = new SqlCommand(sql, c, t))
-            {
-                if (ps != null && ps.Length > 0) cmd.Parameters.AddRange(ps);
-                object o = cmd.ExecuteScalar();
-                return (o == null || o == DBNull.Value) ? null : o;
-            }
+            using SqlCommand cmd = new(sql, c, t);
+            if (ps != null && ps.Length > 0) cmd.Parameters.AddRange(ps);
+            object o = cmd.ExecuteScalar();
+            return (o == null || o == DBNull.Value) ? null : o;
         }
 
         public static int ScalarInt(string sql, params SqlParameter[] ps)
@@ -100,15 +96,13 @@ namespace FinalSystemUI.Database
 
         public static List<T> Read<T>(string sql, Func<SqlDataReader, T> map, params SqlParameter[] ps)
         {
-            List<T> list = new List<T>();
+            List<T> list = [];
             using (SqlConnection c = Open())
-            using (SqlCommand cmd = new SqlCommand(sql, c))
+            using (SqlCommand cmd = new(sql, c))
             {
                 if (ps != null && ps.Length > 0) cmd.Parameters.AddRange(ps);
-                using (SqlDataReader r = cmd.ExecuteReader())
-                {
-                    while (r.Read()) list.Add(map(r));
-                }
+                using SqlDataReader r = cmd.ExecuteReader();
+                while (r.Read()) list.Add(map(r));
             }
             return list;
         }
@@ -122,19 +116,17 @@ namespace FinalSystemUI.Database
         /// <summary>Runs several commands as one unit. If anything fails, nothing is saved.</summary>
         public static void InTransaction(Action<SqlConnection, SqlTransaction> work)
         {
-            using (SqlConnection c = Open())
-            using (SqlTransaction t = c.BeginTransaction())
+            using SqlConnection c = Open();
+            using SqlTransaction t = c.BeginTransaction();
+            try
             {
-                try
-                {
-                    work(c, t);
-                    t.Commit();
-                }
-                catch
-                {
-                    t.Rollback();
-                    throw;
-                }
+                work(c, t);
+                t.Commit();
+            }
+            catch
+            {
+                t.Rollback();
+                throw;
             }
         }
 
